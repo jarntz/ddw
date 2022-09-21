@@ -19,10 +19,6 @@ dist/
 # Package files
 *.jar
 
-# Maven
-target/
-dist/
-
 # JetBrains IDE
 .idea/
 
@@ -39,12 +35,3 @@ Thumbs.db
 *.app
 *.exe
 *.war
-
-# Large media files
-*.mp4
-*.tiff
-*.avi
-*.flv
-*.mov
-*.wmv
-
