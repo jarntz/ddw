@@ -21,8 +21,6 @@ function draw() {
     let count = 0;
     fill(255);
     textSize(32);
-
-    console.log(data.output.expressions);
     for (let expression in data.output.expressions) {
       //loop through the data object
       count++;
@@ -32,5 +30,15 @@ function draw() {
         windowH - 50 * count
       ); //write object key on the screen
     }
+  }
+  if (data.output.faceDimensions) {
+    noFill();
+    stroke(255, 0, 0);
+    rect(
+      data.output.faceDimensions.x,
+      data.output.faceDimensions.y,
+      data.output.faceDimensions.w,
+      data.output.faceDimensions.h
+    );
   }
 }
