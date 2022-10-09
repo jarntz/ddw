@@ -26,7 +26,7 @@ class Data {
   update() {
     if (this.analysis.loaded) {
       this.output.video.image(this.input.cam, 0, 0);
-      console.log(this.output.video);
+      // console.log(this.output.video);
       this.analysis.getDetections(this.output.video);
       if (this.analysis.expressions) {
         this.output.expressions = this.analysis.expressions;
