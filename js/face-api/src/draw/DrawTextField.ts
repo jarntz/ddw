@@ -1,12 +1,12 @@
-import { IDimensions, IPoint } from "../classes";
-import { getContext2dOrThrow } from "../dom/getContext2dOrThrow";
-import { resolveInput } from "../dom/resolveInput";
+import { IDimensions, IPoint } from '../classes';
+import { getContext2dOrThrow } from '../dom/getContext2dOrThrow';
+import { resolveInput } from '../dom/resolveInput';
 
 export enum AnchorPosition {
-  TOP_LEFT = "TOP_LEFT",
-  TOP_RIGHT = "TOP_RIGHT",
-  BOTTOM_LEFT = "BOTTOM_LEFT",
-  BOTTOM_RIGHT = "BOTTOM_RIGHT",
+  TOP_LEFT = 'TOP_LEFT',
+  TOP_RIGHT = 'TOP_RIGHT',
+  BOTTOM_LEFT = 'BOTTOM_LEFT',
+  BOTTOM_RIGHT = 'BOTTOM_RIGHT',
 }
 
 export interface IDrawTextFieldOptions {
@@ -27,19 +27,12 @@ export class DrawTextFieldOptions implements IDrawTextFieldOptions {
   public padding: number;
 
   constructor(options: IDrawTextFieldOptions = {}) {
-    const {
-      anchorPosition,
-      backgroundColor,
-      fontColor,
-      fontSize,
-      fontStyle,
-      padding,
-    } = options;
+    const { anchorPosition, backgroundColor, fontColor, fontSize, fontStyle, padding } = options;
     this.anchorPosition = anchorPosition || AnchorPosition.TOP_LEFT;
-    this.backgroundColor = backgroundColor || "rgba(0, 0, 0, 0.5)";
-    this.fontColor = fontColor || "rgba(255, 255, 255, 1)";
+    this.backgroundColor = backgroundColor || 'rgba(0, 0, 0, 0.5)';
+    this.fontColor = fontColor || 'rgba(255, 255, 255, 1)';
     this.fontSize = fontSize || 14;
-    this.fontStyle = fontStyle || "Georgia";
+    this.fontStyle = fontStyle || 'Georgia';
     this.padding = padding || 4;
   }
 }
@@ -49,29 +42,15 @@ export class DrawTextField {
   public anchor: IPoint;
   public options: DrawTextFieldOptions;
 
-  constructor(
-    text: string | string[] | DrawTextField,
-    anchor: IPoint,
-    options: IDrawTextFieldOptions = {}
-  ) {
-    this.text =
-      typeof text === "string"
-        ? [text]
-        : text instanceof DrawTextField
-        ? text.text
-        : text;
+  constructor(text: string | string[] | DrawTextField, anchor: IPoint, options: IDrawTextFieldOptions = {}) {
+    this.text = typeof text === 'string' ? [text] : text instanceof DrawTextField ? text.text : text;
     this.anchor = anchor;
     this.options = new DrawTextFieldOptions(options);
   }
 
   measureWidth(ctx: CanvasRenderingContext2D): number {
     const { padding } = this.options;
-    return (
-      this.text
-        .map((l) => ctx.measureText(l).width)
-        .reduce((w0, w1) => (w0 < w1 ? w1 : w0), 0) +
-      2 * padding
-    );
+    return this.text.map((l) => ctx.measureText(l).width).reduce((w0, w1) => (w0 < w1 ? w1 : w0), 0) + 2 * padding;
   }
 
   measureHeight(): number {
@@ -79,17 +58,10 @@ export class DrawTextField {
     return this.text.length * fontSize + 2 * padding;
   }
 
-  getUpperLeft(
-    ctx: CanvasRenderingContext2D,
-    canvasDims?: IDimensions
-  ): IPoint {
+  getUpperLeft(ctx: CanvasRenderingContext2D, canvasDims?: IDimensions): IPoint {
     const { anchorPosition } = this.options;
-    const isShiftLeft =
-      anchorPosition === AnchorPosition.BOTTOM_RIGHT ||
-      anchorPosition === AnchorPosition.TOP_RIGHT;
-    const isShiftTop =
-      anchorPosition === AnchorPosition.BOTTOM_LEFT ||
-      anchorPosition === AnchorPosition.BOTTOM_RIGHT;
+    const isShiftLeft = anchorPosition === AnchorPosition.BOTTOM_RIGHT || anchorPosition === AnchorPosition.TOP_RIGHT;
+    const isShiftTop = anchorPosition === AnchorPosition.BOTTOM_LEFT || anchorPosition === AnchorPosition.BOTTOM_RIGHT;
 
     const textFieldWidth = this.measureWidth(ctx);
     const textFieldHeight = this.measureHeight();
@@ -110,8 +82,7 @@ export class DrawTextField {
     const canvas = resolveInput(canvasArg);
     const ctx = getContext2dOrThrow(canvas);
 
-    const { backgroundColor, fontColor, fontSize, fontStyle, padding } =
-      this.options;
+    const { backgroundColor, fontColor, fontSize, fontStyle, padding } = this.options;
 
     ctx.font = `${fontSize}px ${fontStyle}`;
     const maxTextWidth = this.measureWidth(ctx);

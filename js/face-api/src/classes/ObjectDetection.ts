@@ -1,6 +1,6 @@
-import { Box } from "./Box";
-import { Dimensions, IDimensions } from "./Dimensions";
-import { IRect, Rect } from "./Rect";
+import { Box } from './Box';
+import { Dimensions, IDimensions } from './Dimensions';
+import { IRect, Rect } from './Rect';
 
 export class ObjectDetection {
   private _score: number;
@@ -9,13 +9,7 @@ export class ObjectDetection {
   private _box: Rect;
   private _imageDims: Dimensions;
 
-  constructor(
-    score: number,
-    classScore: number,
-    className: string,
-    relativeBox: IRect,
-    imageDims: IDimensions
-  ) {
+  constructor(score: number, classScore: number, className: string, relativeBox: IRect, imageDims: IDimensions) {
     this._imageDims = new Dimensions(imageDims.width, imageDims.height);
     this._score = score;
     this._classScore = classScore;
@@ -49,12 +43,6 @@ export class ObjectDetection {
   }
 
   public forSize(width: number, height: number): ObjectDetection {
-    return new ObjectDetection(
-      this.score,
-      this.classScore,
-      this.className,
-      this.relativeBox,
-      { width, height }
-    );
+    return new ObjectDetection(this.score, this.classScore, this.className, this.relativeBox, { width, height });
   }
 }

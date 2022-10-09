@@ -1,25 +1,16 @@
-import * as tf from "@tensorflow/tfjs-core";
+import * as tf from '@tensorflow/tfjs-core';
 
-import { IDimensions, Point } from "../classes";
-import { FaceLandmarks68 } from "../classes/FaceLandmarks68";
-import { NetInput, TNetInput, toNetInput } from "../dom";
-import {
-  FaceFeatureExtractorParams,
-  TinyFaceFeatureExtractorParams,
-} from "../faceFeatureExtractor/types";
-import { FaceProcessor } from "../faceProcessor/FaceProcessor";
-import { isEven } from "../utils";
+import { IDimensions, Point } from '../classes';
+import { FaceLandmarks68 } from '../classes/FaceLandmarks68';
+import { NetInput, TNetInput, toNetInput } from '../dom';
+import { FaceFeatureExtractorParams, TinyFaceFeatureExtractorParams } from '../faceFeatureExtractor/types';
+import { FaceProcessor } from '../faceProcessor/FaceProcessor';
+import { isEven } from '../utils';
 
 export abstract class FaceLandmark68NetBase<
-  TExtractorParams extends
-    | FaceFeatureExtractorParams
-    | TinyFaceFeatureExtractorParams
+  TExtractorParams extends FaceFeatureExtractorParams | TinyFaceFeatureExtractorParams
 > extends FaceProcessor<TExtractorParams> {
-  public postProcess(
-    output: tf.Tensor2D,
-    inputSize: number,
-    originalDimensions: IDimensions[]
-  ): tf.Tensor2D {
+  public postProcess(output: tf.Tensor2D, inputSize: number, originalDimensions: IDimensions[]): tf.Tensor2D {
     const inputDimensions = originalDimensions.map(({ width, height }) => {
       const scale = inputSize / Math.max(height, width);
       return {
@@ -37,37 +28,26 @@ export abstract class FaceLandmark68NetBase<
           .as2D(1, 136)
           .as1D();
 
-      const getPadding = (
-        batchIdx: number,
-        cond: (w: number, h: number) => boolean
-      ): number => {
+      const getPadding = (batchIdx: number, cond: (w: number, h: number) => boolean): number => {
         const { width, height } = inputDimensions[batchIdx];
         return cond(width, height) ? Math.abs(width - height) / 2 : 0;
       };
-      const getPaddingX = (batchIdx: number) =>
-        getPadding(batchIdx, (w, h) => w < h);
-      const getPaddingY = (batchIdx: number) =>
-        getPadding(batchIdx, (w, h) => h < w);
+      const getPaddingX = (batchIdx: number) => getPadding(batchIdx, (w, h) => w < h);
+      const getPaddingY = (batchIdx: number) => getPadding(batchIdx, (w, h) => h < w);
 
       const landmarkTensors = output
         .mul(tf.fill([batchSize, 136], inputSize))
         .sub(
           tf.stack(
             Array.from(Array(batchSize), (_, batchIdx) =>
-              createInterleavedTensor(
-                getPaddingX(batchIdx),
-                getPaddingY(batchIdx)
-              )
+              createInterleavedTensor(getPaddingX(batchIdx), getPaddingY(batchIdx))
             )
           )
         )
         .div(
           tf.stack(
             Array.from(Array(batchSize), (_, batchIdx) =>
-              createInterleavedTensor(
-                inputDimensions[batchIdx].width,
-                inputDimensions[batchIdx].height
-              )
+              createInterleavedTensor(inputDimensions[batchIdx].width, inputDimensions[batchIdx].height)
             )
           )
         );
@@ -91,13 +71,9 @@ export abstract class FaceLandmark68NetBase<
     return this.forwardInput(await toNetInput(input));
   }
 
-  public async detectLandmarks(
-    input: TNetInput
-  ): Promise<FaceLandmarks68 | FaceLandmarks68[]> {
+  public async detectLandmarks(input: TNetInput): Promise<FaceLandmarks68 | FaceLandmarks68[]> {
     const netInput = await toNetInput(input);
-    const landmarkTensors = tf.tidy(() =>
-      tf.unstack(this.forwardInput(netInput))
-    );
+    const landmarkTensors = tf.tidy(() => tf.unstack(this.forwardInput(netInput)));
 
     const landmarksForBatch = await Promise.all(
       landmarkTensors.map(async (landmarkTensor, batchIdx) => {

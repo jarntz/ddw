@@ -1,5 +1,5 @@
-import { env } from "../env";
-import { resolveInput } from "./resolveInput";
+import { env } from '../env';
+import { resolveInput } from './resolveInput';
 
 export function getContext2dOrThrow(
   canvasArg: string | HTMLCanvasElement | CanvasRenderingContext2D
@@ -13,14 +13,12 @@ export function getContext2dOrThrow(
   const canvas = resolveInput(canvasArg);
 
   if (!(canvas instanceof Canvas)) {
-    throw new Error(
-      "resolveContext2d - expected canvas to be of instance of Canvas"
-    );
+    throw new Error('resolveContext2d - expected canvas to be of instance of Canvas');
   }
 
-  const ctx = canvas.getContext("2d");
+  const ctx = canvas.getContext('2d');
   if (!ctx) {
-    throw new Error("resolveContext2d - canvas 2d context is null");
+    throw new Error('resolveContext2d - canvas 2d context is null');
   }
 
   return ctx;

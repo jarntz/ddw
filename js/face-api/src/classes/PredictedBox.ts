@@ -1,7 +1,7 @@
-import { isValidProbablitiy } from "../utils";
-import { IBoundingBox } from "./BoundingBox";
-import { LabeledBox } from "./LabeledBox";
-import { IRect } from "./Rect";
+import { isValidProbablitiy } from '../utils';
+import { IBoundingBox } from './BoundingBox';
+import { LabeledBox } from './LabeledBox';
+import { IRect } from './Rect';
 
 export class PredictedBox extends LabeledBox {
   public static assertIsValidPredictedBox(box: any, callee: string) {
@@ -17,12 +17,7 @@ export class PredictedBox extends LabeledBox {
   private _score: number;
   private _classScore: number;
 
-  constructor(
-    box: IBoundingBox | IRect | any,
-    label: number,
-    score: number,
-    classScore: number
-  ) {
+  constructor(box: IBoundingBox | IRect | any, label: number, score: number, classScore: number) {
     super(box, label);
     this._score = score;
     this._classScore = classScore;

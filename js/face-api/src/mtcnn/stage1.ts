@@ -1,13 +1,13 @@
-import * as tf from "@tensorflow/tfjs-core";
+import * as tf from '@tensorflow/tfjs-core';
 
-import { BoundingBox, Point } from "../classes";
-import { nonMaxSuppression } from "../ops";
-import { CELL_SIZE, CELL_STRIDE } from "./config";
-import { getSizesForScale } from "./getSizesForScale";
-import { MtcnnBox } from "./MtcnnBox";
-import { normalize } from "./normalize";
-import { PNet } from "./PNet";
-import { PNetParams } from "./types";
+import { BoundingBox, Point } from '../classes';
+import { nonMaxSuppression } from '../ops';
+import { CELL_SIZE, CELL_STRIDE } from './config';
+import { getSizesForScale } from './getSizesForScale';
+import { MtcnnBox } from './MtcnnBox';
+import { normalize } from './normalize';
+import { PNet } from './PNet';
+import { PNetParams } from './types';
 
 function rescaleAndNormalize(x: tf.Tensor4D, scale: number): tf.Tensor4D {
   return tf.tidy(() => {
@@ -94,36 +94,29 @@ export function stage1(
     })
   );
 
-  const boxesForScale = pnetOutputs.map(
-    ({ scoresTensor, regionsTensor, scale, statsForScale }) => {
-      const boundingBoxes = extractBoundingBoxes(
-        scoresTensor,
-        regionsTensor,
-        scale,
-        scoreThreshold
-      );
+  const boxesForScale = pnetOutputs.map(({ scoresTensor, regionsTensor, scale, statsForScale }) => {
+    const boundingBoxes = extractBoundingBoxes(scoresTensor, regionsTensor, scale, scoreThreshold);
 
-      scoresTensor.dispose();
-      regionsTensor.dispose();
+    scoresTensor.dispose();
+    regionsTensor.dispose();
 
-      if (!boundingBoxes.length) {
-        stats.stage1.push(statsForScale);
-        return [];
-      }
-
-      let ts = Date.now();
-      const indices = nonMaxSuppression(
-        boundingBoxes.map((bbox) => bbox.cell),
-        boundingBoxes.map((bbox) => bbox.score),
-        0.5
-      );
-      statsForScale.nms = Date.now() - ts;
-      statsForScale.numBoxes = indices.length;
-
+    if (!boundingBoxes.length) {
       stats.stage1.push(statsForScale);
-      return indices.map((boxIdx) => boundingBoxes[boxIdx]);
+      return [];
     }
-  );
+
+    let ts = Date.now();
+    const indices = nonMaxSuppression(
+      boundingBoxes.map((bbox) => bbox.cell),
+      boundingBoxes.map((bbox) => bbox.score),
+      0.5
+    );
+    statsForScale.nms = Date.now() - ts;
+    statsForScale.numBoxes = indices.length;
+
+    stats.stage1.push(statsForScale);
+    return indices.map((boxIdx) => boundingBoxes[boxIdx]);
+  });
 
   const allBoxes = boxesForScale.reduce((all, boxes) => all.concat(boxes), []);
 

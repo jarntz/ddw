@@ -1,40 +1,34 @@
-import * as tf from "@tensorflow/tfjs-core";
+import * as tf from '@tensorflow/tfjs-core';
 
-import { Rect } from "../classes";
-import { FaceDetection } from "../classes/FaceDetection";
-import { NetInput, TNetInput, toNetInput } from "../dom";
-import { NeuralNetwork } from "../NeuralNetwork";
-import { extractParams } from "./extractParams";
-import { extractParamsFromWeigthMap } from "./extractParamsFromWeigthMap";
-import { mobileNetV1 } from "./mobileNetV1";
-import { nonMaxSuppression } from "./nonMaxSuppression";
-import { outputLayer } from "./outputLayer";
-import { predictionLayer } from "./predictionLayer";
-import {
-  ISsdMobilenetv1Options,
-  SsdMobilenetv1Options,
-} from "./SsdMobilenetv1Options";
-import { NetParams } from "./types";
+import { Rect } from '../classes';
+import { FaceDetection } from '../classes/FaceDetection';
+import { NetInput, TNetInput, toNetInput } from '../dom';
+import { NeuralNetwork } from '../NeuralNetwork';
+import { extractParams } from './extractParams';
+import { extractParamsFromWeigthMap } from './extractParamsFromWeigthMap';
+import { mobileNetV1 } from './mobileNetV1';
+import { nonMaxSuppression } from './nonMaxSuppression';
+import { outputLayer } from './outputLayer';
+import { predictionLayer } from './predictionLayer';
+import { ISsdMobilenetv1Options, SsdMobilenetv1Options } from './SsdMobilenetv1Options';
+import { NetParams } from './types';
 
 export class SsdMobilenetv1 extends NeuralNetwork<NetParams> {
   constructor() {
-    super("SsdMobilenetv1");
+    super('SsdMobilenetv1');
   }
 
   public forwardInput(input: NetInput) {
     const { params } = this;
 
     if (!params) {
-      throw new Error("SsdMobilenetv1 - load model before inference");
+      throw new Error('SsdMobilenetv1 - load model before inference');
     }
 
     return tf.tidy(() => {
       const batchTensor = input.toBatchTensor(512, false).toFloat();
 
-      const x = tf.sub(
-        tf.mul(batchTensor, tf.scalar(0.007843137718737125)),
-        tf.scalar(1)
-      ) as tf.Tensor4D;
+      const x = tf.sub(tf.mul(batchTensor, tf.scalar(0.007843137718737125)), tf.scalar(1)) as tf.Tensor4D;
       const features = mobileNetV1(x, params.mobilenetv1);
 
       const { boxPredictions, classPredictions } = predictionLayer(
@@ -51,10 +45,7 @@ export class SsdMobilenetv1 extends NeuralNetwork<NetParams> {
     return this.forwardInput(await toNetInput(input));
   }
 
-  public async locateFaces(
-    input: TNetInput,
-    options: ISsdMobilenetv1Options = {}
-  ): Promise<FaceDetection[]> {
+  public async locateFaces(input: TNetInput, options: ISsdMobilenetv1Options = {}): Promise<FaceDetection[]> {
     const { maxResults, minConfidence } = new SsdMobilenetv1Options(options);
 
     const netInput = await toNetInput(input);
@@ -73,13 +64,7 @@ export class SsdMobilenetv1 extends NeuralNetwork<NetParams> {
     const scoresData = Array.from(await scores.data());
 
     const iouThreshold = 0.5;
-    const indices = nonMaxSuppression(
-      boxes,
-      scoresData,
-      maxResults,
-      iouThreshold,
-      minConfidence
-    );
+    const indices = nonMaxSuppression(boxes, scoresData, maxResults, iouThreshold, minConfidence);
 
     const reshapedDims = netInput.getReshapedInputDimensions(0);
     const inputSize = netInput.inputSize as number;
@@ -88,22 +73,12 @@ export class SsdMobilenetv1 extends NeuralNetwork<NetParams> {
 
     const boxesData = boxes.arraySync();
     const results = indices.map((idx) => {
-      const [top, bottom] = [
-        Math.max(0, boxesData[idx][0]),
-        Math.min(1.0, boxesData[idx][2]),
-      ].map((val) => val * padY);
-      const [left, right] = [
-        Math.max(0, boxesData[idx][1]),
-        Math.min(1.0, boxesData[idx][3]),
-      ].map((val) => val * padX);
-      return new FaceDetection(
-        scoresData[idx],
-        new Rect(left, top, right - left, bottom - top),
-        {
-          height: netInput.getInputHeight(0),
-          width: netInput.getInputWidth(0),
-        }
-      );
+      const [top, bottom] = [Math.max(0, boxesData[idx][0]), Math.min(1.0, boxesData[idx][2])].map((val) => val * padY);
+      const [left, right] = [Math.max(0, boxesData[idx][1]), Math.min(1.0, boxesData[idx][3])].map((val) => val * padX);
+      return new FaceDetection(scoresData[idx], new Rect(left, top, right - left, bottom - top), {
+        height: netInput.getInputHeight(0),
+        width: netInput.getInputWidth(0),
+      });
     });
 
     boxes.dispose();
@@ -113,7 +88,7 @@ export class SsdMobilenetv1 extends NeuralNetwork<NetParams> {
   }
 
   protected getDefaultModelName(): string {
-    return "ssd_mobilenetv1_model";
+    return 'ssd_mobilenetv1_model';
   }
 
   protected extractParamsFromWeigthMap(weightMap: tf.NamedTensorMap) {

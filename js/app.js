@@ -5,7 +5,7 @@ let windowH = window.innerHeight;
 function setup() {
   pixelDensity(1);
   let canvas = createCanvas(windowW, windowH, P2D);
-  canvas.id("p5canvas");
+  canvas.id('p5canvas');
 
   //Create data element after creating the canvas
   //This is necessary because the canvas element is retrieved within the data class
@@ -24,11 +24,7 @@ function draw() {
     for (let expression in data.output.expressions) {
       //loop through the data object
       count++;
-      text(
-        Object.keys(data.output.expressions)[count - 1],
-        50,
-        windowH - 50 * count
-      ); //write object key on the screen
+      text(Object.keys(data.output.expressions)[count - 1], 50, windowH - 50 * count); //write object key on the screen
     }
   }
   if (data.output.faceDimensions) {

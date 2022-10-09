@@ -1,5 +1,5 @@
-import { Box } from "../classes/Box";
-import { iou } from "./iou";
+import { Box } from '../classes/Box';
+import { iou } from './iou';
 
 export function nonMaxSuppression(
   boxes: Box[],
@@ -30,9 +30,7 @@ export function nonMaxSuppression(
       outputs.push(iou(currBox, idxBox, isIOU));
     }
 
-    indicesSortedByScore = indicesSortedByScore.filter(
-      (_, j) => outputs[j] <= iouThreshold
-    );
+    indicesSortedByScore = indicesSortedByScore.filter((_, j) => outputs[j] <= iouThreshold);
   }
 
   return pick;

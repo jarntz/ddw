@@ -1,16 +1,14 @@
-import * as tf from "@tensorflow/tfjs-core";
+import * as tf from '@tensorflow/tfjs-core';
 
-import { NetInput, TNetInput, toNetInput } from "../dom";
-import { FaceFeatureExtractor } from "../faceFeatureExtractor/FaceFeatureExtractor";
-import { FaceFeatureExtractorParams } from "../faceFeatureExtractor/types";
-import { FaceProcessor } from "../faceProcessor/FaceProcessor";
-import { FaceExpressions } from "./FaceExpressions";
+import { NetInput, TNetInput, toNetInput } from '../dom';
+import { FaceFeatureExtractor } from '../faceFeatureExtractor/FaceFeatureExtractor';
+import { FaceFeatureExtractorParams } from '../faceFeatureExtractor/types';
+import { FaceProcessor } from '../faceProcessor/FaceProcessor';
+import { FaceExpressions } from './FaceExpressions';
 
 export class FaceExpressionNet extends FaceProcessor<FaceFeatureExtractorParams> {
-  constructor(
-    faceFeatureExtractor: FaceFeatureExtractor = new FaceFeatureExtractor()
-  ) {
-    super("FaceExpressionNet", faceFeatureExtractor);
+  constructor(faceFeatureExtractor: FaceFeatureExtractor = new FaceFeatureExtractor()) {
+    super('FaceExpressionNet', faceFeatureExtractor);
   }
 
   public forwardInput(input: NetInput | tf.Tensor4D): tf.Tensor2D {
@@ -41,7 +39,7 @@ export class FaceExpressionNet extends FaceProcessor<FaceFeatureExtractorParams>
   }
 
   protected getDefaultModelName(): string {
-    return "face_expression_model";
+    return 'face_expression_model';
   }
 
   protected getClassifierChannelsIn(): number {

@@ -1,8 +1,8 @@
-import * as tf from "@tensorflow/tfjs-core";
+import * as tf from '@tensorflow/tfjs-core';
 
-import { FaceDetection, Point } from "../classes";
-import { ParamMapping } from "../common/types";
-import { TNetInput } from "../dom/types";
+import { FaceDetection, Point } from '../classes';
+import { ParamMapping } from '../common/types';
+import { TNetInput } from '../dom/types';
 import {
   BOX_ANCHORS,
   BOX_ANCHORS_SEPARABLE,
@@ -10,10 +10,10 @@ import {
   DEFAULT_MODEL_NAME_SEPARABLE_CONV,
   IOU_THRESHOLD,
   MEAN_RGB_SEPARABLE,
-} from "./const";
-import { TinyYolov2Base } from "./TinyYolov2Base";
-import { ITinyYolov2Options } from "./TinyYolov2Options";
-import { TinyYolov2NetParams } from "./types";
+} from './const';
+import { TinyYolov2Base } from './TinyYolov2Base';
+import { ITinyYolov2Options } from './TinyYolov2Options';
+import { TinyYolov2NetParams } from './types';
 
 export class TinyYolov2 extends TinyYolov2Base {
   constructor(withSeparableConvs: boolean = true) {
@@ -22,7 +22,7 @@ export class TinyYolov2 extends TinyYolov2Base {
       {
         withSeparableConvs,
         iouThreshold: IOU_THRESHOLD,
-        classes: ["face"],
+        classes: ['face'],
       },
       withSeparableConvs
         ? {
@@ -46,10 +46,7 @@ export class TinyYolov2 extends TinyYolov2Base {
     return this.config.anchors;
   }
 
-  public async locateFaces(
-    input: TNetInput,
-    forwardParams: ITinyYolov2Options
-  ): Promise<FaceDetection[]> {
+  public async locateFaces(input: TNetInput, forwardParams: ITinyYolov2Options): Promise<FaceDetection[]> {
     const objectDetections = await this.detect(input, forwardParams);
     return objectDetections.map(
       (det) =>
@@ -61,9 +58,7 @@ export class TinyYolov2 extends TinyYolov2Base {
   }
 
   protected getDefaultModelName(): string {
-    return this.withSeparableConvs
-      ? DEFAULT_MODEL_NAME_SEPARABLE_CONV
-      : DEFAULT_MODEL_NAME;
+    return this.withSeparableConvs ? DEFAULT_MODEL_NAME_SEPARABLE_CONV : DEFAULT_MODEL_NAME;
   }
 
   protected extractParamsFromWeigthMap(weightMap: tf.NamedTensorMap): {

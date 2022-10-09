@@ -1,17 +1,15 @@
-import { createBrowserEnv } from "./createBrowserEnv";
-import { createFileSystem } from "./createFileSystem";
-import { createNodejsEnv } from "./createNodejsEnv";
-import { isBrowser } from "./isBrowser";
-import { isNodejs } from "./isNodejs";
-import { Environment } from "./types";
+import { createBrowserEnv } from './createBrowserEnv';
+import { createFileSystem } from './createFileSystem';
+import { createNodejsEnv } from './createNodejsEnv';
+import { isBrowser } from './isBrowser';
+import { isNodejs } from './isNodejs';
+import { Environment } from './types';
 
 let environment: Environment | null;
 
 function getEnv(): Environment {
   if (!environment) {
-    throw new Error(
-      "getEnv - environment is not defined, check isNodejs() and isBrowser()"
-    );
+    throw new Error('getEnv - environment is not defined, check isNodejs() and isBrowser()');
   }
   return environment;
 }
@@ -37,18 +35,14 @@ function monkeyPatch(env: Partial<Environment>) {
   }
 
   if (!environment) {
-    throw new Error(
-      "monkeyPatch - environment is not defined, check isNodejs() and isBrowser()"
-    );
+    throw new Error('monkeyPatch - environment is not defined, check isNodejs() and isBrowser()');
   }
 
   const { Canvas = environment.Canvas, Image = environment.Image } = env;
   environment.Canvas = Canvas;
   environment.Image = Image;
-  environment.createCanvasElement =
-    env.createCanvasElement || (() => new Canvas());
-  environment.createImageElement =
-    env.createImageElement || (() => new Image());
+  environment.createCanvasElement = env.createCanvasElement || (() => new Canvas());
+  environment.createImageElement = env.createImageElement || (() => new Image());
 
   environment.ImageData = env.ImageData || environment.ImageData;
   environment.Video = env.Video || environment.Video;
@@ -70,4 +64,4 @@ export const env = {
 
 initialize();
 
-export * from "./types";
+export * from './types';

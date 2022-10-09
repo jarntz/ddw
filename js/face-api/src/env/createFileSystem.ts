@@ -1,11 +1,11 @@
-import { FileSystem } from "./types";
+import { FileSystem } from './types';
 
 export function createFileSystem(fs?: any): FileSystem {
-  let requireFsError = "";
+  let requireFsError = '';
 
   if (!fs) {
     try {
-      fs = require("fs");
+      fs = require('fs');
     } catch (err) {
       requireFsError = err.toString();
     }
@@ -20,9 +20,7 @@ export function createFileSystem(fs?: any): FileSystem {
         });
       }
     : function () {
-        throw new Error(
-          `readFile - failed to require fs in nodejs environment with error: ${requireFsError}`
-        );
+        throw new Error(`readFile - failed to require fs in nodejs environment with error: ${requireFsError}`);
       };
 
   return {

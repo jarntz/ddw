@@ -1,9 +1,9 @@
-import { isTensor3D, isTensor4D } from "../utils";
-import { awaitMediaLoaded } from "./awaitMediaLoaded";
-import { isMediaElement } from "./isMediaElement";
-import { NetInput } from "./NetInput";
-import { resolveInput } from "./resolveInput";
-import { TNetInput } from "./types";
+import { isTensor3D, isTensor4D } from '../utils';
+import { awaitMediaLoaded } from './awaitMediaLoaded';
+import { isMediaElement } from './isMediaElement';
+import { NetInput } from './NetInput';
+import { resolveInput } from './resolveInput';
+import { TNetInput } from './types';
 
 /**
  * Validates the input to make sure, they are valid net inputs and awaits all media elements
@@ -20,21 +20,18 @@ export async function toNetInput(inputs: TNetInput): Promise<NetInput> {
   let inputArgArray = Array.isArray(inputs) ? inputs : [inputs];
 
   if (!inputArgArray.length) {
-    throw new Error("toNetInput - empty array passed as input");
+    throw new Error('toNetInput - empty array passed as input');
   }
 
-  const getIdxHint = (idx: number) =>
-    Array.isArray(inputs) ? ` at input index ${idx}:` : "";
+  const getIdxHint = (idx: number) => (Array.isArray(inputs) ? ` at input index ${idx}:` : '');
 
   const inputArray = inputArgArray.map(resolveInput);
 
   inputArray.forEach((input, i) => {
     if (!isMediaElement(input) && !isTensor3D(input) && !isTensor4D(input)) {
-      if (typeof inputArgArray[i] === "string") {
+      if (typeof inputArgArray[i] === 'string') {
         throw new Error(
-          `toNetInput -${getIdxHint(
-            i
-          )} string passed, but could not resolve HTMLElement for element id ${
+          `toNetInput -${getIdxHint(i)} string passed, but could not resolve HTMLElement for element id ${
             inputArgArray[i]
           }`
         );
@@ -61,9 +58,7 @@ export async function toNetInput(inputs: TNetInput): Promise<NetInput> {
   });
 
   // wait for all media elements being loaded
-  await Promise.all(
-    inputArray.map((input) => isMediaElement(input) && awaitMediaLoaded(input))
-  );
+  await Promise.all(inputArray.map((input) => isMediaElement(input) && awaitMediaLoaded(input)));
 
   return new NetInput(inputArray, Array.isArray(inputs));
 }

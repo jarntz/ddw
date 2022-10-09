@@ -1,4 +1,4 @@
-import * as tf from "@tensorflow/tfjs-core";
+import * as tf from '@tensorflow/tfjs-core';
 
 export function nonMaxSuppression(
   boxes: tf.Tensor2D,
@@ -64,7 +64,6 @@ function IOU(boxes: tf.Tensor2D, i: number, j: number) {
   const intersectionYmax = Math.min(ymaxI, ymaxJ);
   const intersectionXmax = Math.min(xmaxI, xmaxJ);
   const intersectionArea =
-    Math.max(intersectionYmax - intersectionYmin, 0.0) *
-    Math.max(intersectionXmax - intersectionXmin, 0.0);
+    Math.max(intersectionYmax - intersectionYmin, 0.0) * Math.max(intersectionXmax - intersectionXmin, 0.0);
   return intersectionArea / (areaI + areaJ - intersectionArea);
 }

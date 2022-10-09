@@ -1,11 +1,11 @@
-import * as tf from "@tensorflow/tfjs-core";
+import * as tf from '@tensorflow/tfjs-core';
 
-import { BoundingBox, Box, Point } from "../classes";
-import { nonMaxSuppression } from "../ops";
-import { extractImagePatches } from "./extractImagePatches";
-import { MtcnnBox } from "./MtcnnBox";
-import { ONet } from "./ONet";
-import { ONetParams } from "./types";
+import { BoundingBox, Box, Point } from '../classes';
+import { nonMaxSuppression } from '../ops';
+import { extractImagePatches } from './extractImagePatches';
+import { MtcnnBox } from './MtcnnBox';
+import { ONet } from './ONet';
+import { ONetParams } from './types';
 
 export async function stage3(
   img: HTMLCanvasElement,
@@ -29,10 +29,7 @@ export async function stage3(
   });
   stats.stage3_onet = Date.now() - ts;
 
-  const scoresTensor =
-    onetOuts.length > 1
-      ? tf.concat(onetOuts.map((out) => out.scores))
-      : onetOuts[0].scores;
+  const scoresTensor = onetOuts.length > 1 ? tf.concat(onetOuts.map((out) => out.scores)) : onetOuts[0].scores;
   const scores = Array.from(await scoresTensor.data());
   scoresTensor.dispose();
 
@@ -43,16 +40,9 @@ export async function stage3(
 
   const filteredRegions = indices.map((idx) => {
     const regionsData = onetOuts[idx].regions.arraySync();
-    return new MtcnnBox(
-      regionsData[0][0],
-      regionsData[0][1],
-      regionsData[0][2],
-      regionsData[0][3]
-    );
+    return new MtcnnBox(regionsData[0][0], regionsData[0][1], regionsData[0][2], regionsData[0][3]);
   });
-  const filteredBoxes = indices.map((idx, i) =>
-    inputBoxes[idx].calibrate(filteredRegions[i])
-  );
+  const filteredBoxes = indices.map((idx, i) => inputBoxes[idx].calibrate(filteredRegions[i]));
   const filteredScores = indices.map((idx) => scores[idx]);
 
   let finalBoxes: Box[] = [];
@@ -61,12 +51,7 @@ export async function stage3(
 
   if (filteredBoxes.length > 0) {
     ts = Date.now();
-    const indicesNms = nonMaxSuppression(
-      filteredBoxes,
-      filteredScores,
-      0.7,
-      false
-    );
+    const indicesNms = nonMaxSuppression(filteredBoxes, filteredScores, 0.7, false);
     stats.stage3_nms = Date.now() - ts;
 
     finalBoxes = indicesNms.map((idx) => filteredBoxes[idx]);
@@ -77,10 +62,8 @@ export async function stage3(
         .map((_, ptIdx) => {
           const pointsData = onetOuts[idx].points.arraySync();
           return new Point(
-            pointsData[0][ptIdx] * (finalBoxes[i].width + 1) +
-              finalBoxes[i].left,
-            pointsData[0][ptIdx + 5] * (finalBoxes[i].height + 1) +
-              finalBoxes[i].top
+            pointsData[0][ptIdx] * (finalBoxes[i].width + 1) + finalBoxes[i].left,
+            pointsData[0][ptIdx + 5] * (finalBoxes[i].height + 1) + finalBoxes[i].top
           );
         })
     );
