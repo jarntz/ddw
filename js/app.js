@@ -18,7 +18,7 @@ function setup() {
 function draw() {
   data.update();
   background(0);
-  image(data.output.video, 0, 0); // Face cam
+  // image(data.output.video, 0, 0); // Face cam
 
   if (data.output.expressions) {
     let count = 0;
@@ -35,34 +35,41 @@ function draw() {
 
       switch (emotion) {
         case 'neutral':
-          gradientStep = color(255, 255, 255);
+          gradientStep1 = color(255, 0, 0);
+          gradientStep2 = color(0, 255, 0);
           break;
         case 'happy':
-          gradientStep = color(0, 255, 0);
+          gradientStep1 = color(0, 0, 255);
+          gradientStep2 = color(0, 255, 0);
           break;
         case 'angry':
-          gradientStep = color(255, 0, 0);
+          gradientStep1 = color(255, 0, 0);
+          gradientStep2 = color(0, 255, 0);
           break;
         case 'disgusted':
-          gradientStep = color(100, 75, 30);
+          gradientStep1 = color(255, 0, 0);
+          gradientStep2 = color(0, 255, 0);
           break;
         case 'surprised':
-          gradientStep = color(255, 0, 255);
+          gradientStep1 = color(255, 0, 0);
+          gradientStep2 = color(0, 255, 0);
           break;
         case 'sad':
-          gradientStep = color(0, 0, 255);
+          gradientStep1 = color(255, 0, 0);
+          gradientStep2 = color(0, 255, 0);
           break;
         case 'fearful':
-          gradientStep = color(0, 0, 0);
+          gradientStep1 = color(255, 0, 0);
+          gradientStep2 = color(0, 255, 0);
           break;
         default:
       }
 
-      let gradX = mouseX - width / 2;
-      let gradY = mouseY - height / 2;
+      let gradX = 0;
+      let gradY = 0;
       let gradient = ctx.createRadialGradient(0, 0, 50, gradX, gradY, 0);
-      gradient.addColorStop(0, 'black');
-      gradient.addColorStop(1, 'white');
+      gradient.addColorStop(0, gradientStep1);
+      gradient.addColorStop(1, gradientStep2);
       ctx.fillStyle = gradient;
       ellipse(0, 0, 100, 100);
       translate(width / 2, height / 2);
