@@ -78,12 +78,12 @@ function draw() {
 
   if (data.output.faceDimensions) {
     noFill();
-    stroke(255, 0, 0);
-    rect(
-      data.output.faceDimensions.x,
-      data.output.faceDimensions.y,
-      data.output.faceDimensions.w,
-      data.output.faceDimensions.h
-    );
+    // stroke(255, 0, 0);
+    // rect(
+    //   data.output.faceDimensions.x,
+    //   data.output.faceDimensions.y,
+    //   data.output.faceDimensions.w,
+    //   data.output.faceDimensions.h
+    // );
   }
 }
