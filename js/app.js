@@ -17,6 +17,7 @@ function setup() {
 
 function draw() {
   data.update();
+  background(0, 0, 0);
   // image(data.output.video, 0, 0); // Face cam
 
   if (data.output.expressions) {
@@ -68,7 +69,9 @@ function draw() {
           gradientStep2 = color(221, 45, 219);
           break;
         default:
-          background(0);
+          background(0, 0, 0);
+          gradientStep1 = color(0, 0, 0);
+          gradientStep2 = color(0, 0, 0);
       }
 
       let gradX = 0;
@@ -77,13 +80,14 @@ function draw() {
       gradient.addColorStop(0, gradientStep1);
       gradient.addColorStop(1, gradientStep2);
       ctx.fillStyle = gradient;
+
       ellipse(0, 0, 200, 200);
       translate(width / 2, height / 2);
     }
   }
 
   if (data.output.faceDimensions) {
-    noFill();
+    // noFill();
     // stroke(255, 0, 0);
     // rect(
     //   data.output.faceDimensions.x,
