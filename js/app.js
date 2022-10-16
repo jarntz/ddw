@@ -68,11 +68,12 @@ function draw() {
           gradientStep2 = color(221, 45, 219);
           break;
         default:
+          background(0);
       }
 
       let gradX = 0;
       let gradY = 0;
-      let gradient = ctx.createRadialGradient(0, 0, 200, gradX, gradY, 0);
+      let gradient = ctx.createRadialGradient(0, 0, 150, gradX, gradY, 0);
       gradient.addColorStop(0, gradientStep1);
       gradient.addColorStop(1, gradientStep2);
       ctx.fillStyle = gradient;
