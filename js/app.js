@@ -13,6 +13,11 @@ function setup() {
   noStroke();
 
   data = new Data();
+  blob1 = new Blob();
+  blob2 = new Blob();
+  blob3 = new Blob();
+  blob4 = new Blob();
+  blob5 = new Blob();
 }
 
 function draw() {
@@ -74,15 +79,22 @@ function draw() {
           gradientStep2 = color(0, 0, 0);
       }
 
-      let gradX = 0;
-      let gradY = 0;
-      let gradient = ctx.createRadialGradient(0, 0, 150, gradX, gradY, 0);
+      let gradient = ctx.createRadialGradient(0, 0, 150, 0, 0, 0);
+
       gradient.addColorStop(0, gradientStep1);
       gradient.addColorStop(1, gradientStep2);
       ctx.fillStyle = gradient;
 
-      ellipse(0, 0, 200, 200);
-      translate(width / 2, height / 2);
+      blob1.move();
+      blob1.display();
+      blob2.move();
+      blob2.display();
+      blob3.move();
+      blob3.display();
+      blob4.move();
+      blob4.display();
+      blob5.move();
+      blob5.display();
     }
   }
 
@@ -95,5 +107,23 @@ function draw() {
     //   data.output.faceDimensions.w,
     //   data.output.faceDimensions.h
     // );
+  }
+}
+
+class Blob {
+  constructor() {
+    this.x = random(width);
+    this.y = random(height);
+    this.diameter = random(50, 400);
+    this.speed = 5;
+  }
+
+  move() {
+    this.x += random(-this.speed, this.speed);
+    this.y += random(-this.speed, this.speed);
+  }
+
+  display() {
+    ellipse(this.x, this.y, this.diameter, this.diameter);
   }
 }
