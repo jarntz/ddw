@@ -18,6 +18,7 @@ function setup() {
   blob3 = new Blob();
   blob4 = new Blob();
   blob5 = new Blob();
+  blob6 = new Blob();
 }
 
 function draw() {
@@ -79,7 +80,7 @@ function draw() {
           gradientStep2 = color(0, 0, 0);
       }
 
-      let gradient = ctx.createRadialGradient(0, 0, 150, 0, 0, 0);
+      let gradient = ctx.createRadialGradient(0, 0, 400, 0, 0, 0);
 
       gradient.addColorStop(0, gradientStep1);
       gradient.addColorStop(1, gradientStep2);
@@ -95,6 +96,8 @@ function draw() {
       blob4.display();
       blob5.move();
       blob5.display();
+      blob6.move();
+      blob6.display();
     }
   }
 
