@@ -74,9 +74,9 @@ function draw() {
           gradientStep2 = color(85, 85, 85);
           break;
         case 'fearful':
-          background(218, 49, 218);
-          gradientStep1 = color(111, 23, 110);
-          gradientStep2 = color(221, 45, 219);
+          background(85, 85, 85);
+          gradientStep1 = color(224, 227, 226);
+          gradientStep2 = color(85, 85, 85);
           break;
         default:
           background(0, 0, 0);
