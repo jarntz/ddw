@@ -130,7 +130,7 @@ class Blob {
     this.x = random(width);
     this.y = random(height);
     this.diameter = random(50, 400);
-    this.speed = 5;
+    this.speed = 1;
   }
 
   move() {
