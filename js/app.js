@@ -19,6 +19,14 @@ function setup() {
   blob4 = new Blob();
   blob5 = new Blob();
   blob6 = new Blob();
+  blob7 = new Blob();
+  blob7 = new Blob();
+  blob8 = new Blob();
+  blob8 = new Blob();
+  blob9 = new Blob();
+  blob9 = new Blob();
+  blob10 = new Blob();
+  blob10 = new Blob();
 }
 
 function draw() {
@@ -40,34 +48,34 @@ function draw() {
 
       switch (emotion) {
         case 'neutral':
-          background(218, 49, 218);
-          gradientStep1 = color(111, 23, 110);
-          gradientStep2 = color(221, 45, 219);
+          background(224, 227, 226);
+          gradientStep1 = color(255, 255, 255);
+          gradientStep2 = color(224, 227, 226);
           break;
         case 'happy':
-          background(185, 125, 32);
-          gradientStep1 = color(124, 85, 30);
-          gradientStep2 = color(248, 170, 59);
+          background(0, 127, 201);
+          gradientStep1 = color(255, 255, 255);
+          gradientStep2 = color(0, 127, 201);
           break;
         case 'angry':
-          background(220, 95, 80);
-          gradientStep1 = color(107, 36, 34);
-          gradientStep2 = color(214, 71, 67);
+          background(253, 98, 70);
+          gradientStep1 = color(70, 68, 158);
+          gradientStep2 = color(253, 98, 70);
           break;
         case 'disgusted':
-          background(220, 95, 80);
-          gradientStep1 = color(1, 61, 31);
-          gradientStep2 = color(1, 122, 62);
+          background(195, 237, 45);
+          gradientStep1 = color(137, 167, 31);
+          gradientStep2 = color(195, 237, 45);
           break;
         case 'surprised':
-          background(185, 125, 32);
-          gradientStep1 = color(124, 85, 30);
-          gradientStep2 = color(248, 170, 59);
+          background(70, 68, 158);
+          gradientStep1 = color(255, 255, 255);
+          gradientStep2 = color(70, 68, 158);
           break;
         case 'sad':
-          background(111, 148, 185);
-          gradientStep1 = color(127, 170, 214);
-          gradientStep2 = color(255, 255, 255);
+          background(85, 85, 85);
+          gradientStep1 = color(224, 227, 226);
+          gradientStep2 = color(85, 85, 85);
           break;
         case 'fearful':
           background(218, 49, 218);
@@ -98,6 +106,14 @@ function draw() {
       blob5.display();
       blob6.move();
       blob6.display();
+      blob7.move();
+      blob7.display();
+      blob8.move();
+      blob8.display();
+      blob9.move();
+      blob9.display();
+      blob10.move();
+      blob10.display();
     }
   }
 
