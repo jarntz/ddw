@@ -1,6 +1,10 @@
-import { Point } from '../classes';
+import { Point } from "../classes";
 
-export function drawContour(ctx: CanvasRenderingContext2D, points: Point[], isClosed: boolean = false) {
+export function drawContour(
+  ctx: CanvasRenderingContext2D,
+  points: Point[],
+  isClosed: boolean = false
+) {
   ctx.beginPath();
 
   points.slice(1).forEach(({ x, y }, prevIdx) => {

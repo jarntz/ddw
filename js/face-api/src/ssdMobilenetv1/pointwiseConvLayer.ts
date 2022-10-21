@@ -1,10 +1,14 @@
-import * as tf from '@tensorflow/tfjs-core';
+import * as tf from "@tensorflow/tfjs-core";
 
-import { PointwiseConvParams } from './types';
+import { PointwiseConvParams } from "./types";
 
-export function pointwiseConvLayer(x: tf.Tensor4D, params: PointwiseConvParams, strides: [number, number]) {
+export function pointwiseConvLayer(
+  x: tf.Tensor4D,
+  params: PointwiseConvParams,
+  strides: [number, number]
+) {
   return tf.tidy(() => {
-    let out = tf.conv2d(x, params.filters, strides, 'same');
+    let out = tf.conv2d(x, params.filters, strides, "same");
     out = tf.add(out, params.batch_norm_offset);
     return tf.clipByValue(out, 0, 6);
   });

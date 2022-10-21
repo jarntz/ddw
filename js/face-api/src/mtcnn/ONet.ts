@@ -1,10 +1,10 @@
-import * as tf from '@tensorflow/tfjs-core';
+import * as tf from "@tensorflow/tfjs-core";
 
-import { convLayer } from '../common';
-import { fullyConnectedLayer } from '../common/fullyConnectedLayer';
-import { prelu } from './prelu';
-import { sharedLayer } from './sharedLayers';
-import { ONetParams } from './types';
+import { convLayer } from "../common";
+import { fullyConnectedLayer } from "../common/fullyConnectedLayer";
+import { prelu } from "./prelu";
+import { sharedLayer } from "./sharedLayers";
+import { ONetParams } from "./types";
 
 export function ONet(
   x: tf.Tensor4D,
@@ -12,11 +12,14 @@ export function ONet(
 ): { scores: tf.Tensor1D; regions: tf.Tensor2D; points: tf.Tensor2D } {
   return tf.tidy(() => {
     let out = sharedLayer(x, params);
-    out = tf.maxPool(out, [2, 2], [2, 2], 'same');
-    out = convLayer(out, params.conv4, 'valid');
+    out = tf.maxPool(out, [2, 2], [2, 2], "same");
+    out = convLayer(out, params.conv4, "valid");
     out = prelu<tf.Tensor4D>(out, params.prelu4_alpha);
 
-    const vectorized = tf.reshape(out, [out.shape[0], params.fc1.weights.shape[0]]) as tf.Tensor2D;
+    const vectorized = tf.reshape(out, [
+      out.shape[0],
+      params.fc1.weights.shape[0],
+    ]) as tf.Tensor2D;
     const fc1 = fullyConnectedLayer(vectorized, params.fc1);
     const prelu5 = prelu<tf.Tensor2D>(fc1, params.prelu5_alpha);
     const fc2_1 = fullyConnectedLayer(prelu5, params.fc2_1);

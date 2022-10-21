@@ -1,9 +1,9 @@
-import * as tf from '@tensorflow/tfjs-core';
+import * as tf from "@tensorflow/tfjs-core";
 
-import { ParamMapping } from './common';
-import { getModelUris } from './common/getModelUris';
-import { loadWeightMap } from './dom';
-import { env } from './env';
+import { ParamMapping } from "./common";
+import { getModelUris } from "./common/getModelUris";
+import { loadWeightMap } from "./dom";
+import { env } from "./env";
 
 export abstract class NeuralNetwork<TNetParams> {
   protected _params: TNetParams | undefined = undefined;
@@ -40,11 +40,15 @@ export abstract class NeuralNetwork<TNetParams> {
   }
 
   public getTrainableParams() {
-    return this.getParamList().filter((param) => param.tensor instanceof tf.Variable);
+    return this.getParamList().filter(
+      (param) => param.tensor instanceof tf.Variable
+    );
   }
 
   public getFrozenParams() {
-    return this.getParamList().filter((param) => !(param.tensor instanceof tf.Variable));
+    return this.getParamList().filter(
+      (param) => !(param.tensor instanceof tf.Variable)
+    );
   }
 
   public variable() {
@@ -64,7 +68,9 @@ export abstract class NeuralNetwork<TNetParams> {
   public dispose(throwOnRedispose: boolean = true) {
     this.getParamList().forEach((param) => {
       if (throwOnRedispose && param.tensor.isDisposed) {
-        throw new Error(`param tensor has already been disposed for path ${param.path}`);
+        throw new Error(
+          `param tensor has already been disposed for path ${param.path}`
+        );
       }
       param.tensor.dispose();
     });
@@ -79,7 +85,9 @@ export abstract class NeuralNetwork<TNetParams> {
     );
   }
 
-  public async load(weightsOrUrl: Float32Array | string | undefined): Promise<void> {
+  public async load(
+    weightsOrUrl: Float32Array | string | undefined
+  ): Promise<void> {
     if (weightsOrUrl instanceof Float32Array) {
       this.extractWeights(weightsOrUrl);
       return;
@@ -89,7 +97,7 @@ export abstract class NeuralNetwork<TNetParams> {
   }
 
   public async loadFromUri(uri: string | undefined) {
-    if (uri && typeof uri !== 'string') {
+    if (uri && typeof uri !== "string") {
       throw new Error(`${this._name}.loadFromUri - expected model uri`);
     }
 
@@ -98,16 +106,23 @@ export abstract class NeuralNetwork<TNetParams> {
   }
 
   public async loadFromDisk(filePath: string | undefined) {
-    if (filePath && typeof filePath !== 'string') {
+    if (filePath && typeof filePath !== "string") {
       throw new Error(`${this._name}.loadFromDisk - expected model file path`);
     }
 
     const { readFile } = env.getEnv();
 
-    const { manifestUri, modelBaseUri } = getModelUris(filePath, this.getDefaultModelName());
+    const { manifestUri, modelBaseUri } = getModelUris(
+      filePath,
+      this.getDefaultModelName()
+    );
 
     const fetchWeightsFromDisk = (filePaths: string[]) =>
-      Promise.all(filePaths.map((filePath) => readFile(filePath).then((buf) => buf.buffer)));
+      Promise.all(
+        filePaths.map((filePath) =>
+          readFile(filePath).then((buf) => buf.buffer)
+        )
+      );
     const loadWeights = tf.io.weightsLoaderFactory(fetchWeightsFromDisk);
 
     const manifest = JSON.parse((await readFile(manifestUri)).toString());
@@ -117,7 +132,8 @@ export abstract class NeuralNetwork<TNetParams> {
   }
 
   public loadFromWeightMap(weightMap: tf.NamedTensorMap) {
-    const { paramMappings, params } = this.extractParamsFromWeigthMap(weightMap);
+    const { paramMappings, params } =
+      this.extractParamsFromWeigthMap(weightMap);
 
     this._paramMappings = paramMappings;
     this._params = params;
@@ -135,10 +151,12 @@ export abstract class NeuralNetwork<TNetParams> {
       throw new Error(`traversePropertyPath - model has no loaded params`);
     }
 
-    const result = paramPath.split('/').reduce(
+    const result = paramPath.split("/").reduce(
       (res: { nextObj: any; obj?: any; objProp?: string }, objProp) => {
         if (!res.nextObj.hasOwnProperty(objProp)) {
-          throw new Error(`traversePropertyPath - object does not have property ${objProp}, for path ${paramPath}`);
+          throw new Error(
+            `traversePropertyPath - object does not have property ${objProp}, for path ${paramPath}`
+          );
         }
 
         return { obj: res.nextObj, objProp, nextObj: res.nextObj[objProp] };
@@ -148,7 +166,9 @@ export abstract class NeuralNetwork<TNetParams> {
 
     const { obj, objProp } = result;
     if (!obj || !objProp || !(obj[objProp] instanceof tf.Tensor)) {
-      throw new Error(`traversePropertyPath - parameter is not a tensor, for path ${paramPath}`);
+      throw new Error(
+        `traversePropertyPath - parameter is not a tensor, for path ${paramPath}`
+      );
     }
 
     return { obj, objProp };

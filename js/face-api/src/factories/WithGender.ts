@@ -1,5 +1,5 @@
-import { Gender } from '../ageGenderNet/types';
-import { isValidProbablitiy } from '../utils';
+import { Gender } from "../ageGenderNet/types";
+import { isValidProbablitiy } from "../utils";
 
 export type WithGender<TSource> = TSource & {
   gender: Gender;
@@ -8,7 +8,8 @@ export type WithGender<TSource> = TSource & {
 
 export function isWithGender(obj: any): obj is WithGender<{}> {
   return (
-    (obj['gender'] === Gender.MALE || obj['gender'] === Gender.FEMALE) && isValidProbablitiy(obj['genderProbability'])
+    (obj["gender"] === Gender.MALE || obj["gender"] === Gender.FEMALE) &&
+    isValidProbablitiy(obj["genderProbability"])
   );
 }
 

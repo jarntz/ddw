@@ -1,7 +1,7 @@
-import * as tf from '@tensorflow/tfjs-core';
+import * as tf from "@tensorflow/tfjs-core";
 
-import { ConvParams } from '../common';
-import { SeparableConvParams } from '../common/types';
+import { ConvParams } from "../common";
+import { SeparableConvParams } from "../common/types";
 
 export type BatchNorm = {
   sub: tf.Tensor1D;

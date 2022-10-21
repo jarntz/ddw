@@ -1,11 +1,11 @@
-import { minBbox } from '../ops';
-import { getCenterPoint } from '../utils';
-import { IBoundingBox } from './BoundingBox';
-import { Box } from './Box';
-import { Dimensions, IDimensions } from './Dimensions';
-import { FaceDetection } from './FaceDetection';
-import { Point } from './Point';
-import { IRect, Rect } from './Rect';
+import { minBbox } from "../ops";
+import { getCenterPoint } from "../utils";
+import { IBoundingBox } from "./BoundingBox";
+import { Box } from "./Box";
+import { Dimensions, IDimensions } from "./Dimensions";
+import { FaceDetection } from "./FaceDetection";
+import { Point } from "./Point";
+import { IRect, Rect } from "./Rect";
 
 // face alignment constants
 const relX = 0.5;
@@ -22,11 +22,17 @@ export class FaceLandmarks implements IFaceLandmarks {
   protected _positions: Point[];
   protected _imgDims: Dimensions;
 
-  constructor(relativeFaceLandmarkPositions: Point[], imgDims: IDimensions, shift: Point = new Point(0, 0)) {
+  constructor(
+    relativeFaceLandmarkPositions: Point[],
+    imgDims: IDimensions,
+    shift: Point = new Point(0, 0)
+  ) {
     const { width, height } = imgDims;
     this._imgDims = new Dimensions(width, height);
     this._shift = shift;
-    this._positions = relativeFaceLandmarkPositions.map((pt) => pt.mul(new Point(width, height)).add(shift));
+    this._positions = relativeFaceLandmarkPositions.map((pt) =>
+      pt.mul(new Point(width, height)).add(shift)
+    );
   }
 
   public get shift(): Point {
@@ -42,7 +48,9 @@ export class FaceLandmarks implements IFaceLandmarks {
     return this._positions;
   }
   public get relativePositions(): Point[] {
-    return this._positions.map((pt) => pt.sub(this._shift).div(new Point(this.imageWidth, this.imageHeight)));
+    return this._positions.map((pt) =>
+      pt.sub(this._shift).div(new Point(this.imageWidth, this.imageHeight))
+    );
   }
 
   public forSize<T extends FaceLandmarks>(width: number, height: number): T {
@@ -53,7 +61,11 @@ export class FaceLandmarks implements IFaceLandmarks {
   }
 
   public shiftBy<T extends FaceLandmarks>(x: number, y: number): T {
-    return new (this.constructor as any)(this.relativePositions, this._imgDims, new Point(x, y));
+    return new (this.constructor as any)(
+      this.relativePositions,
+      this._imgDims,
+      new Point(x, y)
+    );
   }
 
   public shiftByPoint<T extends FaceLandmarks>(pt: Point): T {
@@ -76,7 +88,10 @@ export class FaceLandmarks implements IFaceLandmarks {
     options: { useDlibAlignment?: boolean; minBoxPadding?: number } = {}
   ): Box {
     if (detection) {
-      const box = detection instanceof FaceDetection ? detection.box.floor() : new Box(detection);
+      const box =
+        detection instanceof FaceDetection
+          ? detection.box.floor()
+          : new Box(detection);
 
       return this.shiftBy(box.x, box.y).align(null, options);
     }
@@ -99,7 +114,8 @@ export class FaceLandmarks implements IFaceLandmarks {
 
     const [leftEyeCenter, rightEyeCenter, mouthCenter] = centers;
     const distToMouth = (pt: Point) => mouthCenter.sub(pt).magnitude();
-    const eyeToMouthDist = (distToMouth(leftEyeCenter) + distToMouth(rightEyeCenter)) / 2;
+    const eyeToMouthDist =
+      (distToMouth(leftEyeCenter) + distToMouth(rightEyeCenter)) / 2;
 
     const size = Math.floor(eyeToMouthDist / relScale);
 
@@ -108,7 +124,12 @@ export class FaceLandmarks implements IFaceLandmarks {
     const x = Math.floor(Math.max(0, refPoint.x - relX * size));
     const y = Math.floor(Math.max(0, refPoint.y - relY * size));
 
-    return new Rect(x, y, Math.min(size, this.imageWidth + x), Math.min(size, this.imageHeight + y));
+    return new Rect(
+      x,
+      y,
+      Math.min(size, this.imageWidth + x),
+      Math.min(size, this.imageHeight + y)
+    );
   }
 
   private alignMinBbox(padding: number): Box {
@@ -117,6 +138,6 @@ export class FaceLandmarks implements IFaceLandmarks {
   }
 
   protected getRefPointsForAlignment(): Point[] {
-    throw new Error('getRefPointsForAlignment not implemented by base class');
+    throw new Error("getRefPointsForAlignment not implemented by base class");
   }
 }

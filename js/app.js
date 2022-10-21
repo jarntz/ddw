@@ -6,10 +6,12 @@ let canvas;
 let ctx;
 
 function setup() {
+  frameRate(10);
   pixelDensity(1);
   canvas = createCanvas(windowW, windowH, P2D);
-  canvas.id('p5canvas');
+  canvas.id('mycanvas');
   ctx = canvas.drawingContext;
+  blobcol = color(195, 237, 45);
   noStroke();
 
   data = new Data();
@@ -23,6 +25,8 @@ function setup() {
   blob8 = new Blob();
   blob9 = new Blob();
   blob10 = new Blob();
+
+  //canvas.parent('canvasContainer');
 }
 
 function draw() {

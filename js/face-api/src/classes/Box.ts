@@ -1,23 +1,33 @@
-import { isDimensions, isValidNumber } from '../utils';
-import { IBoundingBox } from './BoundingBox';
-import { IDimensions } from './Dimensions';
-import { Point } from './Point';
-import { IRect } from './Rect';
+import { isDimensions, isValidNumber } from "../utils";
+import { IBoundingBox } from "./BoundingBox";
+import { IDimensions } from "./Dimensions";
+import { Point } from "./Point";
+import { IRect } from "./Rect";
 
 export class Box<BoxType = any> implements IBoundingBox, IRect {
   public static isRect(rect: any): boolean {
-    return !!rect && [rect.x, rect.y, rect.width, rect.height].every(isValidNumber);
+    return (
+      !!rect && [rect.x, rect.y, rect.width, rect.height].every(isValidNumber)
+    );
   }
 
-  public static assertIsValidBox(box: any, callee: string, allowNegativeDimensions: boolean = false) {
+  public static assertIsValidBox(
+    box: any,
+    callee: string,
+    allowNegativeDimensions: boolean = false
+  ) {
     if (!Box.isRect(box)) {
       throw new Error(
-        `${callee} - invalid box: ${JSON.stringify(box)}, expected object with properties x, y, width, height`
+        `${callee} - invalid box: ${JSON.stringify(
+          box
+        )}, expected object with properties x, y, width, height`
       );
     }
 
     if (!allowNegativeDimensions && (box.width < 0 || box.height < 0)) {
-      throw new Error(`${callee} - width (${box.width}) and height (${box.height}) must be positive numbers`);
+      throw new Error(
+        `${callee} - width (${box.width}) and height (${box.height}) must be positive numbers`
+      );
     }
   }
 
@@ -26,21 +36,34 @@ export class Box<BoxType = any> implements IBoundingBox, IRect {
   private _width: number;
   private _height: number;
 
-  constructor(_box: IBoundingBox | IRect, allowNegativeDimensions: boolean = true) {
+  constructor(
+    _box: IBoundingBox | IRect,
+    allowNegativeDimensions: boolean = true
+  ) {
     const box = (_box || {}) as any;
 
-    const isBbox = [box.left, box.top, box.right, box.bottom].every(isValidNumber);
+    const isBbox = [box.left, box.top, box.right, box.bottom].every(
+      isValidNumber
+    );
     const isRect = [box.x, box.y, box.width, box.height].every(isValidNumber);
 
     if (!isRect && !isBbox) {
-      throw new Error(`Box.constructor - expected box to be IBoundingBox | IRect, instead have ${JSON.stringify(box)}`);
+      throw new Error(
+        `Box.constructor - expected box to be IBoundingBox | IRect, instead have ${JSON.stringify(
+          box
+        )}`
+      );
     }
 
     const [x, y, width, height] = isRect
       ? [box.x, box.y, box.width, box.height]
       : [box.left, box.top, box.right - box.left, box.bottom - box.top];
 
-    Box.assertIsValidBox({ x, y, width, height }, 'Box.constructor', allowNegativeDimensions);
+    Box.assertIsValidBox(
+      { x, y, width, height },
+      "Box.constructor",
+      allowNegativeDimensions
+    );
 
     this._x = x;
     this._y = y;
@@ -89,12 +112,16 @@ export class Box<BoxType = any> implements IBoundingBox, IRect {
   }
 
   public round(): Box<BoxType> {
-    const [x, y, width, height] = [this.x, this.y, this.width, this.height].map((val) => Math.round(val));
+    const [x, y, width, height] = [this.x, this.y, this.width, this.height].map(
+      (val) => Math.round(val)
+    );
     return new Box({ x, y, width, height });
   }
 
   public floor(): Box<BoxType> {
-    const [x, y, width, height] = [this.x, this.y, this.width, this.height].map((val) => Math.floor(val));
+    const [x, y, width, height] = [this.x, this.y, this.width, this.height].map(
+      (val) => Math.floor(val)
+    );
     return new Box({ x, y, width, height });
   }
 
@@ -125,7 +152,12 @@ export class Box<BoxType = any> implements IBoundingBox, IRect {
   }
 
   public pad(padX: number, padY: number): Box<BoxType> {
-    let [x, y, width, height] = [this.x - padX / 2, this.y - padY / 2, this.width + padX, this.height + padY];
+    let [x, y, width, height] = [
+      this.x - padX / 2,
+      this.y - padY / 2,
+      this.width + padX,
+      this.height + padY,
+    ];
     return new Box({ x, y, width, height });
   }
 

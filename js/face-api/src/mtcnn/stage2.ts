@@ -1,11 +1,11 @@
-import * as tf from '@tensorflow/tfjs-core';
+import * as tf from "@tensorflow/tfjs-core";
 
-import { Box } from '../classes';
-import { nonMaxSuppression } from '../ops';
-import { extractImagePatches } from './extractImagePatches';
-import { MtcnnBox } from './MtcnnBox';
-import { RNet } from './RNet';
-import { RNetParams } from './types';
+import { Box } from "../classes";
+import { nonMaxSuppression } from "../ops";
+import { extractImagePatches } from "./extractImagePatches";
+import { MtcnnBox } from "./MtcnnBox";
+import { RNet } from "./RNet";
+import { RNetParams } from "./types";
 
 export async function stage2(
   img: HTMLCanvasElement,
@@ -29,7 +29,10 @@ export async function stage2(
   });
   stats.stage2_rnet = Date.now() - ts;
 
-  const scoresTensor = rnetOuts.length > 1 ? tf.concat(rnetOuts.map((out) => out.scores)) : rnetOuts[0].scores;
+  const scoresTensor =
+    rnetOuts.length > 1
+      ? tf.concat(rnetOuts.map((out) => out.scores))
+      : rnetOuts[0].scores;
   const scores = Array.from(await scoresTensor.data());
   scoresTensor.dispose();
 
@@ -51,11 +54,18 @@ export async function stage2(
 
     const regions = indicesNms.map((idx) => {
       const regionsData = rnetOuts[indices[idx]].regions.arraySync();
-      return new MtcnnBox(regionsData[0][0], regionsData[0][1], regionsData[0][2], regionsData[0][3]);
+      return new MtcnnBox(
+        regionsData[0][0],
+        regionsData[0][1],
+        regionsData[0][2],
+        regionsData[0][3]
+      );
     });
 
     finalScores = indicesNms.map((idx) => filteredScores[idx]);
-    finalBoxes = indicesNms.map((idx, i) => filteredBoxes[idx].calibrate(regions[i]));
+    finalBoxes = indicesNms.map((idx, i) =>
+      filteredBoxes[idx].calibrate(regions[i])
+    );
   }
 
   rnetOuts.forEach((t) => {

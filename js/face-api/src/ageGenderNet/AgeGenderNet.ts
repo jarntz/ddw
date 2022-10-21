@@ -1,19 +1,19 @@
-import * as tf from '@tensorflow/tfjs-core';
+import * as tf from "@tensorflow/tfjs-core";
 
-import { fullyConnectedLayer } from '../common/fullyConnectedLayer';
-import { seperateWeightMaps } from '../faceProcessor/util';
-import { TinyXception } from '../xception/TinyXception';
-import { extractParams } from './extractParams';
-import { extractParamsFromWeigthMap } from './extractParamsFromWeigthMap';
-import { AgeAndGenderPrediction, Gender, NetOutput, NetParams } from './types';
-import { NeuralNetwork } from '../NeuralNetwork';
-import { NetInput, TNetInput, toNetInput } from '../dom';
+import { fullyConnectedLayer } from "../common/fullyConnectedLayer";
+import { seperateWeightMaps } from "../faceProcessor/util";
+import { TinyXception } from "../xception/TinyXception";
+import { extractParams } from "./extractParams";
+import { extractParamsFromWeigthMap } from "./extractParamsFromWeigthMap";
+import { AgeAndGenderPrediction, Gender, NetOutput, NetParams } from "./types";
+import { NeuralNetwork } from "../NeuralNetwork";
+import { NetInput, TNetInput, toNetInput } from "../dom";
 
 export class AgeGenderNet extends NeuralNetwork<NetParams> {
   private _faceFeatureExtractor: TinyXception;
 
   constructor(faceFeatureExtractor: TinyXception = new TinyXception(2)) {
-    super('AgeGenderNet');
+    super("AgeGenderNet");
     this._faceFeatureExtractor = faceFeatureExtractor;
   }
 
@@ -29,9 +29,14 @@ export class AgeGenderNet extends NeuralNetwork<NetParams> {
     }
 
     return tf.tidy(() => {
-      const bottleneckFeatures = input instanceof NetInput ? this.faceFeatureExtractor.forwardInput(input) : input;
+      const bottleneckFeatures =
+        input instanceof NetInput
+          ? this.faceFeatureExtractor.forwardInput(input)
+          : input;
 
-      const pooled = tf.avgPool(bottleneckFeatures, [7, 7], [2, 2], 'valid').as2D(bottleneckFeatures.shape[0], -1);
+      const pooled = tf
+        .avgPool(bottleneckFeatures, [7, 7], [2, 2], "valid")
+        .as2D(bottleneckFeatures.shape[0], -1);
       const age = fullyConnectedLayer(pooled, params.fc.age).as1D();
       const gender = fullyConnectedLayer(pooled, params.fc.gender);
       return { age, gender };
@@ -49,7 +54,9 @@ export class AgeGenderNet extends NeuralNetwork<NetParams> {
     return this.forwardInput(await toNetInput(input));
   }
 
-  public async predictAgeAndGender(input: TNetInput): Promise<AgeAndGenderPrediction | AgeAndGenderPrediction[]> {
+  public async predictAgeAndGender(
+    input: TNetInput
+  ): Promise<AgeAndGenderPrediction | AgeAndGenderPrediction[]> {
     const netInput = await toNetInput(input);
     const out = await this.forwardInput(netInput);
 
@@ -80,7 +87,7 @@ export class AgeGenderNet extends NeuralNetwork<NetParams> {
   }
 
   protected getDefaultModelName(): string {
-    return 'age_gender_model';
+    return "age_gender_model";
   }
 
   public dispose(throwOnRedispose: boolean = true) {
@@ -99,7 +106,8 @@ export class AgeGenderNet extends NeuralNetwork<NetParams> {
   }
 
   protected extractParamsFromWeigthMap(weightMap: tf.NamedTensorMap) {
-    const { featureExtractorMap, classifierMap } = seperateWeightMaps(weightMap);
+    const { featureExtractorMap, classifierMap } =
+      seperateWeightMaps(weightMap);
 
     this.faceFeatureExtractor.loadFromWeightMap(featureExtractorMap);
 
@@ -109,8 +117,13 @@ export class AgeGenderNet extends NeuralNetwork<NetParams> {
   protected extractParams(weights: Float32Array) {
     const classifierWeightSize = 512 * 1 + 1 + (512 * 2 + 2);
 
-    const featureExtractorWeights = weights.slice(0, weights.length - classifierWeightSize);
-    const classifierWeights = weights.slice(weights.length - classifierWeightSize);
+    const featureExtractorWeights = weights.slice(
+      0,
+      weights.length - classifierWeightSize
+    );
+    const classifierWeights = weights.slice(
+      weights.length - classifierWeightSize
+    );
 
     this.faceFeatureExtractor.extractWeights(featureExtractorWeights);
     return this.extractClassifierParams(classifierWeights);

@@ -1,9 +1,13 @@
-import * as tf from '@tensorflow/tfjs-core';
+import * as tf from "@tensorflow/tfjs-core";
 
-import { Box, IDimensions } from '../classes';
-import { createCanvas, createCanvasFromMedia, getContext2dOrThrow } from '../dom';
-import { env } from '../env';
-import { normalize } from './normalize';
+import { Box, IDimensions } from "../classes";
+import {
+  createCanvas,
+  createCanvasFromMedia,
+  getContext2dOrThrow,
+} from "../dom";
+import { env } from "../env";
+import { normalize } from "./normalize";
 
 export async function extractImagePatches(
   img: HTMLCanvasElement,
@@ -21,7 +25,9 @@ export async function extractImagePatches(
       const fromY = y - 1;
       const imgData = imgCtx.getImageData(fromX, fromY, ex - fromX, ey - fromY);
 
-      return env.isNodejs() ? createCanvasFromMedia(imgData) : createImageBitmap(imgData);
+      return env.isNodejs()
+        ? createCanvasFromMedia(imgData)
+        : createImageBitmap(imgData);
     })
   );
 

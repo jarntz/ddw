@@ -1,7 +1,12 @@
-import * as tf from '@tensorflow/tfjs-core';
+import * as tf from "@tensorflow/tfjs-core";
 
-import { disposeUnusedWeightTensors, extractWeightEntryFactory, FCParams, ParamMapping } from '../common';
-import { NetParams } from './types';
+import {
+  disposeUnusedWeightTensors,
+  extractWeightEntryFactory,
+  FCParams,
+  ParamMapping,
+} from "../common";
+import { NetParams } from "./types";
 
 export function extractParamsFromWeigthMap(weightMap: tf.NamedTensorMap): {
   params: NetParams;
@@ -9,7 +14,10 @@ export function extractParamsFromWeigthMap(weightMap: tf.NamedTensorMap): {
 } {
   const paramMappings: ParamMapping[] = [];
 
-  const extractWeightEntry = extractWeightEntryFactory(weightMap, paramMappings);
+  const extractWeightEntry = extractWeightEntryFactory(
+    weightMap,
+    paramMappings
+  );
 
   function extractFcParams(prefix: string): FCParams {
     const weights = extractWeightEntry<tf.Tensor2D>(`${prefix}/weights`, 2);
@@ -19,8 +27,8 @@ export function extractParamsFromWeigthMap(weightMap: tf.NamedTensorMap): {
 
   const params = {
     fc: {
-      age: extractFcParams('fc/age'),
-      gender: extractFcParams('fc/gender'),
+      age: extractFcParams("fc/age"),
+      gender: extractFcParams("fc/gender"),
     },
   };
 

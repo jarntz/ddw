@@ -1,10 +1,13 @@
-import { IPoint } from '../classes';
-import { FaceLandmarks } from '../classes/FaceLandmarks';
-import { FaceLandmarks68 } from '../classes/FaceLandmarks68';
-import { getContext2dOrThrow } from '../dom/getContext2dOrThrow';
-import { WithFaceDetection } from '../factories/WithFaceDetection';
-import { isWithFaceLandmarks, WithFaceLandmarks } from '../factories/WithFaceLandmarks';
-import { drawContour } from './drawContour';
+import { IPoint } from "../classes";
+import { FaceLandmarks } from "../classes/FaceLandmarks";
+import { FaceLandmarks68 } from "../classes/FaceLandmarks68";
+import { getContext2dOrThrow } from "../dom/getContext2dOrThrow";
+import { WithFaceDetection } from "../factories/WithFaceDetection";
+import {
+  isWithFaceLandmarks,
+  WithFaceLandmarks,
+} from "../factories/WithFaceLandmarks";
+import { drawContour } from "./drawContour";
 
 export interface IDrawFaceLandmarksOptions {
   drawLines?: boolean;
@@ -24,13 +27,20 @@ export class DrawFaceLandmarksOptions {
   public pointColor: string;
 
   constructor(options: IDrawFaceLandmarksOptions = {}) {
-    const { drawLines = true, drawPoints = true, lineWidth, lineColor, pointSize, pointColor } = options;
+    const {
+      drawLines = true,
+      drawPoints = true,
+      lineWidth,
+      lineColor,
+      pointSize,
+      pointColor,
+    } = options;
     this.drawLines = drawLines;
     this.drawPoints = drawPoints;
     this.lineWidth = lineWidth || 1;
     this.pointSize = pointSize || 2;
-    this.lineColor = lineColor || 'rgba(0, 255, 255, 1)';
-    this.pointColor = pointColor || 'rgba(255, 0, 255, 1)';
+    this.lineColor = lineColor || "rgba(0, 255, 255, 1)";
+    this.pointColor = pointColor || "rgba(255, 0, 255, 1)";
   }
 }
 
@@ -38,7 +48,10 @@ export class DrawFaceLandmarks {
   public faceLandmarks: FaceLandmarks;
   public options: DrawFaceLandmarksOptions;
 
-  constructor(faceLandmarks: FaceLandmarks, options: IDrawFaceLandmarksOptions = {}) {
+  constructor(
+    faceLandmarks: FaceLandmarks,
+    options: IDrawFaceLandmarksOptions = {}
+  ) {
     this.faceLandmarks = faceLandmarks;
     this.options = new DrawFaceLandmarksOptions(options);
   }
@@ -46,7 +59,14 @@ export class DrawFaceLandmarks {
   draw(canvasArg: string | HTMLCanvasElement | CanvasRenderingContext2D) {
     const ctx = getContext2dOrThrow(canvasArg);
 
-    const { drawLines, drawPoints, lineWidth, lineColor, pointSize, pointColor } = this.options;
+    const {
+      drawLines,
+      drawPoints,
+      lineWidth,
+      lineColor,
+      pointSize,
+      pointColor,
+    } = this.options;
 
     if (drawLines && this.faceLandmarks instanceof FaceLandmarks68) {
       ctx.strokeStyle = lineColor;
@@ -74,18 +94,27 @@ export class DrawFaceLandmarks {
   }
 }
 
-export type DrawFaceLandmarksInput = FaceLandmarks | WithFaceLandmarks<WithFaceDetection<{}>>;
+export type DrawFaceLandmarksInput =
+  | FaceLandmarks
+  | WithFaceLandmarks<WithFaceDetection<{}>>;
 
 export function drawFaceLandmarks(
   canvasArg: string | HTMLCanvasElement,
   faceLandmarks: DrawFaceLandmarksInput | Array<DrawFaceLandmarksInput>
 ) {
-  const faceLandmarksArray = Array.isArray(faceLandmarks) ? faceLandmarks : [faceLandmarks];
+  const faceLandmarksArray = Array.isArray(faceLandmarks)
+    ? faceLandmarks
+    : [faceLandmarks];
   faceLandmarksArray.forEach((f) => {
-    const landmarks = f instanceof FaceLandmarks ? f : isWithFaceLandmarks(f) ? f.landmarks : undefined;
+    const landmarks =
+      f instanceof FaceLandmarks
+        ? f
+        : isWithFaceLandmarks(f)
+        ? f.landmarks
+        : undefined;
     if (!landmarks) {
       throw new Error(
-        'drawFaceLandmarks - expected faceExpressions to be FaceLandmarks | WithFaceLandmarks<WithFaceDetection<{}>> or array thereof'
+        "drawFaceLandmarks - expected faceExpressions to be FaceLandmarks | WithFaceLandmarks<WithFaceDetection<{}>> or array thereof"
       );
     }
 
